@@ -1,0 +1,39 @@
+## Requires Pandoc version >=2.8
+## Usages pandoc -d defaults.yaml -o index.html index.md
+
+from: markdown+emoji+fenced_divs
+# reader: may be used instead of from:
+to: revealjs
+# writer: may be used instead of to:
+
+metadata:  date=%date%
+
+standalone: true
+self-contained: false
+
+toc: true
+toc-depth: 2
+
+
+html-math-method:
+  method: katex
+#   url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+
+css: custom.css
+
+incremental: false
+
+highlight-style: haddock
+
+variables:
+  toc-title: "Outline"
+  mouseWheel: true
+  width: 1600
+  height: 900
+  maxScale: 1.5
+  navigationMode: linear
+  view: scroll
+  scrollProgress: true
+  # defaultTiming: 5
+  slideNumber: >
+    'c/t'
