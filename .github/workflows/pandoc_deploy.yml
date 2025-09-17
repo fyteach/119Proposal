@@ -23,6 +23,7 @@ jobs:
       run: |
         mkdir -p output
         mv index.html output/
+        mv custom.css output/
         # Copy any additional assets (CSS, images, etc.) if needed
         # cp -R assets/ output/  # Uncomment if you have an assets directory
 
