@@ -1,46 +1,38 @@
-name: Deploy MkDocs to gh-pages
+name: Deploy Slides to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]  # Change to your source branch
   workflow_dispatch:
-
-permissions:
-  contents: write
-
-env:
-  PYTHON_VERSION: '3.11'
-  BUILD_DIR: site
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    - name: Setup Pandoc
+      uses: pandoc/setup-pandoc@v1
+      with:
+        pandoc-version: 'latest'
+        texlive: 'none'
 
-      - name: Install MkDocs and plugins
-        run: |
-          python -m pip install --upgrade pip
-          pip install mkdocs==1.* mkdocs-material mkdocs-awesome-pages-plugin
-          # If you have a requirements.txt:
-          # pip install -r requirements.txt
+    - name: Convert Markdown to HTML
+      run: |
+        pandoc -d defaults.yaml -o index.html index.md
 
-      - name: Build
-        run: mkdocs build --strict
+    - name: Create output directory
+      run: mkdir -p output
 
-      - name: Add .nojekyll
-        run: |
-          touch "${{ env.BUILD_DIR }}/.nojekyll"
+    - name: Move generated files
+      run: |
+        mv index.html output/
+        mv custom.css output/
+        # Add any additional assets (CSS, images, etc.) to output/ here
 
-      - name: Deploy to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: ${{ env.BUILD_DIR }}
-          clean: true
-          single-commit: true
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./output
